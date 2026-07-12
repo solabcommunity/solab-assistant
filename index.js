@@ -26,20 +26,28 @@ Enjoy your stay! 💜`
 });
 
 // ترحيب بالأعضاء الجدد
-bot.on("new_chat_members", (msg) => {
+bot.on("new_chat_members", async (msg) => {
   const chatId = msg.chat.id;
 
-  msg.new_chat_members.forEach((member) => {
-    bot.sendMessage(
+  for (const member of msg.new_chat_members) {
+
+    // تجاهل إذا كان العضو هو البوت نفسه
+    if (member.is_bot) continue;
+
+    await bot.sendMessage(
       chatId,
-      `🎉 Welcome, ${member.first_name}!
+`🎉 Welcome, ${member.first_name}!
 
-Welcome to the SOLAB Community. 💜
+Welcome to the SOLAB Community 💜
 
-📢 Please read the pinned message.
-🚀 Stay active and enjoy the community!`
+🚀 Stay active
+💬 Respect everyone
+📢 Read the pinned message
+🌐 X: https://x.com/CommunitySolab
+
+Enjoy your stay!`
     );
-  });
+  }
 });
 
 // رسالة عند خروج عضو
