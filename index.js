@@ -8,6 +8,14 @@ const bot = new TelegramBot(process.env.BOT_TOKEN, {
 console.log("✅ SOLAB Assistant is running...");
 
 // =============================
+// Trusted Users
+// =============================
+const TRUSTED_USERS = [
+  937663893,   // Saeed
+  6726885511,  // Black
+];
+
+// =============================
 // /start
 // =============================
 bot.onText(/\/start/, (msg) => {
@@ -64,4 +72,64 @@ bot.on("left_chat_member", (msg) => {
 
 Wishing you all the best, and you're always welcome back. 💜`
   );
+});
+
+// =============================
+// Anti-Spam (Links Filter)
+// =============================
+bot.on("message", async (msg) => {
+
+  if (!msg.text) return;
+
+  // Ignore bot commands
+  if (msg.text.startsWith("/")) return;
+
+  const chatId = msg.chat.id;
+  const userId = msg.from.id;
+
+  // Allow trusted users
+  if (TRUSTED_USERS.includes(userId)) return;
+
+  // Allow admins
+  try {
+    const member = await bot.getChatMember(chatId, userId);
+
+    if (
+      member.status === "administrator" ||
+      member.status === "creator"
+    ) {
+      return;
+    }
+  } catch (err) {
+    console.log(err);
+  }
+
+  // Detect links
+  const hasLink =
+    /(https?:\/\/|www\.|t\.me|telegram\.me|x\.com|twitter\.com|discord\.gg|discord\.com)/i.test(
+      msg.text
+    );
+
+  if (!hasLink) return;
+
+  try {
+
+    // Delete link message
+    await bot.deleteMessage(chatId, msg.message_id);
+
+    // Warning
+    const warning = await bot.sendMessage(
+      chatId,
+      `⚠️ ${msg.from.first_name}, links are not allowed.`
+    );
+
+    // Delete warning after 5 seconds
+    setTimeout(() => {
+      bot.deleteMessage(chatId, warning.message_id).catch(() => {});
+    }, 5000);
+
+  } catch (err) {
+    console.log(err);
+  }
+
 });
