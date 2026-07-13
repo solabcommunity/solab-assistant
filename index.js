@@ -16,6 +16,11 @@ const TRUSTED_USERS = [
 ];
 
 // =============================
+// User Warnings
+// =============================
+const userWarnings = {};
+
+// =============================
 // /start
 // =============================
 bot.onText(/\/start/, (msg) => {
@@ -40,11 +45,11 @@ Welcome to the SOLAB family!`
 // Welcome New Members
 // =============================
 bot.on("new_chat_members", async (msg) => {
+
   const chatId = msg.chat.id;
 
   for (const member of msg.new_chat_members) {
 
-    // Ignore bots
     if (member.is_bot) continue;
 
     await bot.sendMessage(
@@ -59,39 +64,43 @@ Take a look around, join the conversation, and don't hesitate to jump in.
 
 Let's build something amazing together. 🚀`
     );
+
   }
+
 });
 
 // =============================
 // Goodbye Message
 // =============================
 bot.on("left_chat_member", (msg) => {
+
   bot.sendMessage(
     msg.chat.id,
 `👋 Thanks for being part of SOLAB, ${msg.left_chat_member.first_name}.
 
 Wishing you all the best, and you're always welcome back. 💜`
   );
+
 });
 
 // =============================
-// Anti-Spam (Links Filter)
+// Anti Spam
 // =============================
 bot.on("message", async (msg) => {
 
-  if (!msg.text) return;
+  if (!msg.from) return;
 
-  // Ignore bot commands
-  if (msg.text.startsWith("/")) return;
+  if (msg.text && msg.text.startsWith("/")) return;
 
   const chatId = msg.chat.id;
   const userId = msg.from.id;
 
-  // Allow trusted users
+  // Trusted users
   if (TRUSTED_USERS.includes(userId)) return;
 
-  // Allow admins
+  // Ignore admins
   try {
+
     const member = await bot.getChatMember(chatId, userId);
 
     if (
@@ -100,30 +109,66 @@ bot.on("message", async (msg) => {
     ) {
       return;
     }
+
   } catch (err) {
     console.log(err);
+    return;
   }
 
-  // Detect links
-  const hasLink =
-    /(https?:\/\/|www\.|t\.me|telegram\.me|x\.com|twitter\.com|discord\.gg|discord\.com)/i.test(
-      msg.text
-    );
+  const text = msg.text || "";
 
-  if (!hasLink) return;
+  const hasLink =
+    /(https?:\/\/|www\.|t\.me|telegram\.me|x\.com|twitter\.com|discord\.gg|discord\.com)/i.test(text);
+
+  const hasMention =
+    /@\w+/i.test(text);
+
+  const isForward =
+    msg.forward_date ||
+    msg.forward_from ||
+    msg.forward_sender_name;
+
+  if (!(hasLink || hasMention || isForward)) return;
 
   try {
 
-    // Delete link message
+    // Delete message
     await bot.deleteMessage(chatId, msg.message_id);
 
-    // Warning
+    // Count warnings
+    if (!userWarnings[userId]) {
+      userWarnings[userId] = 0;
+    }
+
+    userWarnings[userId]++;
+
+    if (userWarnings[userId] >= 3) {
+
+      await bot.restrictChatMember(chatId, userId, {
+        permissions: {
+          can_send_messages: false,
+        },
+        until_date: Math.floor(Date.now() / 1000) + 86400,
+      });
+
+      const muted = await bot.sendMessage(
+        chatId,
+        `🚫 ${msg.from.first_name} has been muted for 24 hours.\nReason: Spam`
+      );
+
+      setTimeout(() => {
+        bot.deleteMessage(chatId, muted.message_id).catch(() => {});
+      }, 5000);
+
+      return;
+
+    }
+
     const warning = await bot.sendMessage(
       chatId,
-      `⚠️ ${msg.from.first_name}, links are not allowed.`
+      `⚠️ ${msg.from.first_name}\n\nLinks, mentions and forwarded messages are not allowed.\n\nWarning ${userWarnings[userId]}/3`
     );
 
-    // Delete warning after 5 seconds
     setTimeout(() => {
       bot.deleteMessage(chatId, warning.message_id).catch(() => {});
     }, 5000);
