@@ -98,6 +98,120 @@ Stay tuned 💜`
 });
 
 // =============================
+// /roadmap
+// =============================
+bot.onText(/\/roadmap/, (msg) => {
+
+  bot.sendMessage(
+    msg.chat.id,
+`🗺 SOLAB Roadmap
+
+Phase 1 ✅
+• Community Rebuild
+• Telegram Launch
+• X Relaunch
+
+Phase 2 🚧
+• Official Website
+• SOLAB Assistant
+• Community Growth
+
+Phase 3
+• Utilities
+• Partnerships
+• Ecosystem Expansion
+
+Stay tuned 💜`
+  );
+
+});
+
+// =============================
+// /token
+// =============================
+bot.onText(/\/token/, (msg) => {
+
+  bot.sendMessage(
+    msg.chat.id,
+`🪙 SOLAB Token
+
+Official token information will be announced soon.
+
+⚠️ Always verify information through our official channels.
+
+Stay tuned 💜`
+  );
+
+});
+
+// =============================
+// /whitepaper
+// =============================
+bot.onText(/\/whitepaper/, (msg) => {
+
+  bot.sendMessage(
+    msg.chat.id,
+`📄 Whitepaper
+
+The official Whitepaper is currently under development.
+
+It will be available soon on:
+
+🌐 https://solab.live
+
+Stay tuned 💜`
+  );
+
+});
+
+// =============================
+// /buy
+// =============================
+bot.onText(/\/buy/, (msg) => {
+
+  bot.sendMessage(
+    msg.chat.id,
+`💰 How to Buy SOLAB
+
+The official buying guide will be published soon.
+
+Please follow our official announcements.
+
+𝕏 https://x.com/CommunitySolab`
+  );
+
+});
+
+// =============================
+// /faq
+// =============================
+bot.onText(/\/faq/, (msg) => {
+
+  bot.sendMessage(
+    msg.chat.id,
+`❓ SOLAB FAQ
+
+Available Commands
+
+/start
+/help
+/rules
+/socials
+/website
+/roadmap
+/token
+/whitepaper
+/buy
+/status
+
+More features coming soon 🚀`
+  );
+
+});
+
+
+
+// =============================
 // /status (Admins Only)
 // =============================
 bot.onText(/\/status/, async (msg) => {
