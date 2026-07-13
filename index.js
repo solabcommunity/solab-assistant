@@ -4,8 +4,8 @@ const TelegramBot = require("node-telegram-bot-api");
 const bot = new TelegramBot(process.env.BOT_TOKEN, {
   polling: true,
 });
-
-console.log("✅ SOLAB Assistant is running...");
+console.log("🤖 SOLAB Assistant v1.2");
+console.log("🟢 Bot Started Successfully");
 
 // =============================
 // Trusted Users
@@ -97,6 +97,58 @@ Stay tuned 💜`
 
 });
 
+// =============================
+// /status (Admins Only)
+// =============================
+bot.onText(/\/status/, async (msg) => {
+
+  const chatId = msg.chat.id;
+  const userId = msg.from.id;
+
+  try {
+
+    // Trusted Users
+    if (!TRUSTED_USERS.includes(userId)) {
+
+      const member = await bot.getChatMember(chatId, userId);
+
+      if (
+        member.status !== "administrator" &&
+        member.status !== "creator"
+      ) {
+        return;
+      }
+
+    }
+
+    const uptime = Math.floor(process.uptime());
+
+    const hours = Math.floor(uptime / 3600);
+    const minutes = Math.floor((uptime % 3600) / 60);
+    const seconds = uptime % 60;
+
+    bot.sendMessage(chatId,
+`🤖 SOLAB Assistant
+
+🟢 Status: Online
+
+🛡 Anti-Spam: Active
+🔗 Link Filter: Active
+⚠️ Warnings: Active
+👮 Admin Protection: Active
+
+⏱ Uptime:
+${hours}h ${minutes}m ${seconds}s
+
+Version: v1.2`
+);
+
+  } catch (err) {
+    console.error("❌ Error:", err.message);
+  }
+
+});
+
 bot.onText(/\/start/, (msg) => {
   bot.sendMessage(
     msg.chat.id,
@@ -185,7 +237,7 @@ bot.on("message", async (msg) => {
     }
 
   } catch (err) {
-    console.log(err);
+    console.error("❌ Error:", err.message);
     return;
   }
 
@@ -248,7 +300,7 @@ bot.on("message", async (msg) => {
     }, 5000);
 
   } catch (err) {
-    console.log(err);
+    console.error("❌ Error:", err.message);
   }
 
 });
