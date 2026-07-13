@@ -5,55 +5,63 @@ const bot = new TelegramBot(process.env.BOT_TOKEN, {
   polling: true,
 });
 
-// عند تشغيل البوت
 console.log("✅ SOLAB Assistant is running...");
 
-// رسالة /start
+// =============================
+// /start
+// =============================
 bot.onText(/\/start/, (msg) => {
   bot.sendMessage(
     msg.chat.id,
-    `👋 Welcome to SOLAB!
+`👋 Welcome to SOLAB! 💜
 
-We're happy to have you here.
+Great to have you here.
 
-🚀 Stay active
-💬 Respect everyone
-📢 Follow announcements
+This is the official community where we build, learn, and grow together.
+
+🚀 Join the conversation
+💬 Ask questions
+📌 Check the pinned message
 🌐 X: https://x.com/CommunitySolab
 
-Enjoy your stay! 💜`
+Welcome to the SOLAB family!`
   );
 });
 
-// ترحيب بالأعضاء الجدد
+// =============================
+// Welcome New Members
+// =============================
 bot.on("new_chat_members", async (msg) => {
   const chatId = msg.chat.id;
 
   for (const member of msg.new_chat_members) {
 
-    // تجاهل إذا كان العضو هو البوت نفسه
+    // Ignore bots
     if (member.is_bot) continue;
 
     await bot.sendMessage(
       chatId,
-`🎉 Welcome, ${member.first_name}!
+`👋 Welcome to SOLAB, ${member.first_name}! 💜
 
-Welcome to the SOLAB Community 💜
+It's great to have you with us.
 
-🚀 Stay active
-💬 Respect everyone
-📢 Read the pinned message
-🌐 X: https://x.com/CommunitySolab
+Take a look around, join the conversation, and don't hesitate to jump in.
 
-Enjoy your stay!`
+📌 Please check the pinned message to get started.
+
+Let's build something amazing together. 🚀`
     );
   }
 });
 
-// رسالة عند خروج عضو
+// =============================
+// Goodbye Message
+// =============================
 bot.on("left_chat_member", (msg) => {
   bot.sendMessage(
     msg.chat.id,
-    `👋 ${msg.left_chat_member.first_name} has left the community.`
+`👋 Thanks for being part of SOLAB, ${msg.left_chat_member.first_name}.
+
+Wishing you all the best, and you're always welcome back. 💜`
   );
 });
