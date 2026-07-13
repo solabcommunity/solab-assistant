@@ -1,6 +1,33 @@
 require("dotenv").config();
+const express = require("express");
 const TelegramBot = require("node-telegram-bot-api");
 
+// =============================
+// Express Server (Render)
+// =============================
+const app = express();
+
+const PORT = process.env.PORT || 3000;
+
+app.get("/", (req, res) => {
+  res.status(200).send("SOLAB Assistant is running.");
+});
+
+app.get("/health", (req, res) => {
+  res.json({
+    status: "online",
+    bot: "SOLAB Assistant",
+    uptime: process.uptime(),
+  });
+});
+
+app.listen(PORT, () => {
+  console.log(`🌐 Web server running on port ${PORT}`);
+});
+
+// =============================
+// Telegram Bot
+// =============================
 const bot = new TelegramBot(process.env.BOT_TOKEN, {
   polling: true,
 });
@@ -11,8 +38,8 @@ console.log("✅ SOLAB Assistant is running...");
 // Trusted Users
 // =============================
 const TRUSTED_USERS = [
-  937663893,   // Saeed
-  6726885511,  // Black
+  937663893, // Saeed
+  6726885511, // Black
 ];
 
 // =============================
@@ -166,7 +193,11 @@ bot.on("message", async (msg) => {
 
     const warning = await bot.sendMessage(
       chatId,
-      `⚠️ ${msg.from.first_name}\n\nLinks, mentions and forwarded messages are not allowed.\n\nWarning ${userWarnings[userId]}/3`
+      `⚠️ ${msg.from.first_name}
+
+Links, mentions and forwarded messages are not allowed.
+
+Warning ${userWarnings[userId]}/3`
     );
 
     setTimeout(() => {
