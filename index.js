@@ -1,33 +1,6 @@
 require("dotenv").config();
-const express = require("express");
 const TelegramBot = require("node-telegram-bot-api");
 
-// =============================
-// Express Server (Render)
-// =============================
-const app = express();
-
-const PORT = process.env.PORT || 3000;
-
-app.get("/", (req, res) => {
-  res.status(200).send("SOLAB Assistant is running.");
-});
-
-app.get("/health", (req, res) => {
-  res.json({
-    status: "online",
-    bot: "SOLAB Assistant",
-    uptime: process.uptime(),
-  });
-});
-
-app.listen(PORT, () => {
-  console.log(`🌐 Web server running on port ${PORT}`);
-});
-
-// =============================
-// Telegram Bot
-// =============================
 const bot = new TelegramBot(process.env.BOT_TOKEN, {
   polling: true,
 });
@@ -38,8 +11,8 @@ console.log("✅ SOLAB Assistant is running...");
 // Trusted Users
 // =============================
 const TRUSTED_USERS = [
-  937663893, // Saeed
-  6726885511, // Black
+  937663893,   // Saeed
+  6726885511,  // Black
 ];
 
 // =============================
@@ -50,6 +23,80 @@ const userWarnings = {};
 // =============================
 // /start
 // =============================
+// =============================
+// /help
+// =============================
+bot.onText(/\/help/, (msg) => {
+
+  bot.sendMessage(
+    msg.chat.id,
+`🤖 SOLAB Assistant
+
+Available Commands:
+
+/start - Welcome message
+/help - Show commands
+/rules - Community rules
+/socials - Official links
+/website - Website status`
+  );
+
+});
+
+// =============================
+// /rules
+// =============================
+bot.onText(/\/rules/, (msg) => {
+
+  bot.sendMessage(
+    msg.chat.id,
+`📜 SOLAB Community Rules
+
+1. Respect everyone.
+2. No spam.
+3. No advertising.
+4. No scam links.
+5. Stay on topic.
+
+Let's build a great community together 💜`
+  );
+
+});
+
+// =============================
+// /socials
+// =============================
+bot.onText(/\/socials/, (msg) => {
+
+  bot.sendMessage(
+    msg.chat.id,
+`🌐 Official SOLAB Links
+
+𝕏 X
+https://x.com/CommunitySolab
+
+Telegram
+https://t.me/JoinSOLAB`
+  );
+
+});
+
+// =============================
+// /website
+// =============================
+bot.onText(/\/website/, (msg) => {
+
+  bot.sendMessage(
+    msg.chat.id,
+`🌐 Website
+
+Coming Soon...
+
+Stay tuned 💜`
+  );
+
+});
+
 bot.onText(/\/start/, (msg) => {
   bot.sendMessage(
     msg.chat.id,
@@ -193,11 +240,7 @@ bot.on("message", async (msg) => {
 
     const warning = await bot.sendMessage(
       chatId,
-      `⚠️ ${msg.from.first_name}
-
-Links, mentions and forwarded messages are not allowed.
-
-Warning ${userWarnings[userId]}/3`
+      `⚠️ ${msg.from.first_name}\n\nLinks, mentions and forwarded messages are not allowed.\n\nWarning ${userWarnings[userId]}/3`
     );
 
     setTimeout(() => {
