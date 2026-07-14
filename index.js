@@ -11,24 +11,35 @@ const bot = new TelegramBot(process.env.BOT_TOKEN, {
   },
 });
 
-bot.on("polling_error", (error) => {
-  console.error("Polling Error:", error.code || error.message);
+// =============================
+// Error Monitoring
+// =============================
+bot.on("polling_error", (err) => {
+  console.error("❌ Polling Error:", err.code || err.message);
 });
 
-bot.on("error", (error) => {
-  console.error("Bot Error:", error);
+bot.on("webhook_error", (err) => {
+  console.error("❌ Webhook Error:", err);
+});
+
+bot.on("error", (err) => {
+  console.error("❌ Bot Error:", err);
 });
 
 process.on("unhandledRejection", (reason) => {
-  console.error("Unhandled Rejection:", reason);
+  console.error("❌ Unhandled Rejection:", reason);
 });
 
 process.on("uncaughtException", (err) => {
-  console.error("Uncaught Exception:", err);
+  console.error("❌ Uncaught Exception:", err);
 });
 
-console.log("🤖 SOLAB Assistant v1.2");
+console.log("");
+console.log("====================================");
+console.log("🤖 SOLAB Assistant v1.3");
 console.log("🟢 Bot Started Successfully");
+console.log("====================================");
+console.log("");
 
 // =============================
 // Trusted Users
