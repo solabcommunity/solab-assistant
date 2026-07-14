@@ -17,7 +17,7 @@ const bot = new TelegramBot(process.env.BOT_TOKEN, {
 // Error Monitoring
 // =============================
 bot.on("polling_error", (err) => {
-  console.error("❌ Polling Error:", err.code || err.message);
+  console.error(JSON.stringify(err, null, 2));
 });
 
 bot.on("webhook_error", (err) => {
