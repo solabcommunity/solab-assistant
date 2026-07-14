@@ -1,5 +1,22 @@
-require("dotenv").config();
-const TelegramBot = require("node-telegram-bot-api");
+const express = require("express");
+const app = express();
+
+const PORT = process.env.PORT || 10000;
+
+app.get("/", (req, res) => {
+  res.send("SOLAB Assistant is running 🚀");
+});
+
+app.get("/health", (req, res) => {
+  res.json({
+    status: "online",
+    uptime: process.uptime(),
+  });
+});
+
+app.listen(PORT, () => {
+  console.log(`🌐 Web Server running on port ${PORT}`);
+});
 
 const bot = new TelegramBot(process.env.BOT_TOKEN, {
   polling: {
@@ -17,7 +34,7 @@ const bot = new TelegramBot(process.env.BOT_TOKEN, {
 // Error Monitoring
 // =============================
 bot.on("polling_error", (err) => {
-  console.error(JSON.stringify(err, null, 2));
+  console.error(err);
 });
 
 bot.on("webhook_error", (err) => {
@@ -299,7 +316,7 @@ bot.onText(/\/status/, async (msg) => {
 ⏱ Uptime:
 ${hours}h ${minutes}m ${seconds}s
 
-Version: v1.2`
+Version: v1.3`
 );
 
   } catch (err) {
@@ -380,6 +397,20 @@ bot.on("message", async (msg) => {
   const chatId = msg.chat.id;
   const userId = msg.from.id;
 
+// =============================
+// Chat Type
+// =============================
+if (msg.chat.type === "private") {
+  // SOLAB AI (Coming Soon)
+}
+
+if (
+  msg.chat.type === "group" ||
+  msg.chat.type === "supergroup"
+) {
+  // Group Moderation
+}
+  
   // Trusted users
   if (TRUSTED_USERS.includes(userId)) return;
 
