@@ -61,14 +61,6 @@ const TRUSTED_USERS = [
 
 
 // =============================
-// Trusted Users
-// =============================
-const TRUSTED_USERS = [
-  937663893,   // Saeed
-  6726885511,  // Black
-];
-
-// =============================
 // User Warnings
 // =============================
 const userWarnings = {};
