@@ -11,6 +11,8 @@ const bot = new TelegramBot(process.env.BOT_TOKEN, {
   },
 });
 
+
+
 // =============================
 // Error Monitoring
 // =============================
@@ -40,6 +42,23 @@ console.log("🤖 SOLAB Assistant v1.3");
 console.log("🟢 Bot Started Successfully");
 console.log("====================================");
 console.log("");
+
+// 👇 ضعها هنا
+setInterval(() => {
+  console.log(
+    `💚 Heartbeat | Uptime: ${Math.floor(process.uptime())} sec`
+  );
+}, 300000);
+
+// =============================
+// Trusted Users
+// =============================
+const TRUSTED_USERS = [
+  937663893,
+  6726885511,
+];
+
+
 
 // =============================
 // Trusted Users
