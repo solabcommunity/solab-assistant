@@ -2,8 +2,31 @@ require("dotenv").config();
 const TelegramBot = require("node-telegram-bot-api");
 
 const bot = new TelegramBot(process.env.BOT_TOKEN, {
-  polling: true,
+  polling: {
+    interval: 300,
+    autoStart: true,
+    params: {
+      timeout: 10,
+    },
+  },
 });
+
+bot.on("polling_error", (error) => {
+  console.error("Polling Error:", error.code || error.message);
+});
+
+bot.on("error", (error) => {
+  console.error("Bot Error:", error);
+});
+
+process.on("unhandledRejection", (reason) => {
+  console.error("Unhandled Rejection:", reason);
+});
+
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught Exception:", err);
+});
+
 console.log("🤖 SOLAB Assistant v1.2");
 console.log("🟢 Bot Started Successfully");
 
